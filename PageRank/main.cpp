@@ -2,8 +2,8 @@
 //  main.cpp
 //  PageRank
 //
-//  Created by 任蕾 on 2020/4/3.
-//  Copyright © 2020 任蕾. All rights reserved.
+//  Created by Vodka_rl on 2020/4/3.
+//  Copyright © 2020 Vodka_rl. All rights reserved.
 //
 
 #include <iostream>
