@@ -67,14 +67,18 @@ int main(int argc, const char * argv[]) {
         tmpr[i] = 0.0;
     }
     double e = 1.0;  // epsilon
-    while (e>0.0000001) {  // 限
+    double beta = 0.8;
+    while (e>0.000000001) {  // 限
         e = 0.0;
         for (int i=0; i<cnt; i++) {
             int tmpi = idnode[m_edge[i].v] - 1;
             int tmpj = idnode[m_edge[i].u] - 1;
-            tmpr[tmpi] += r[tmpj]/degree[m_edge[i].u];  // 临时r矩阵更新
+            tmpr[tmpi] += r[tmpj]/degree[m_edge[i].u];  // 临时r矩阵更新 r = M·r
         }
         for (int i=0; i<N; i++) {
+            cout<<tmpr[i]<<endl;
+            tmpr[i] = beta * tmpr[i] + (1-beta)/N;  // 矩阵分配
+            cout<<tmpr[i]<<endl;
             e += r[i] > tmpr[i] ? (r[i] - tmpr[i]) : (tmpr[i] - r[i]);  // 计算epsilon
             r[i] = tmpr[i];  // r矩阵更新
             tmpr[i] = 0.0;  // 临时r矩阵z重置
