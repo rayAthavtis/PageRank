@@ -23,6 +23,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		70430D282456B1FA0005B917 /* pagerank.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = pagerank.txt; sourceTree = "<group>"; };
 		7085E20124407D6F00FE8FA8 /* PageRank大作业说明.pdf */ = {isa = PBXFileReference; lastKnownFileType = image.pdf; path = "PageRank大作业说明.pdf"; sourceTree = SOURCE_ROOT; };
 		70C3F36E243E181700FEE428 /* PageRank */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = PageRank; sourceTree = BUILT_PRODUCTS_DIR; };
 		70C3F371243E181700FEE428 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
@@ -41,6 +42,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		70430D25245682130005B917 /* out */ = {
+			isa = PBXGroup;
+			children = (
+				70430D282456B1FA0005B917 /* pagerank.txt */,
+			);
+			path = out;
+			sourceTree = "<group>";
+		};
 		70C3F365243E181700FEE428 = {
 			isa = PBXGroup;
 			children = (
@@ -61,6 +70,7 @@
 		70C3F370243E181700FEE428 /* PageRank */ = {
 			isa = PBXGroup;
 			children = (
+				70430D25245682130005B917 /* out */,
 				70D5B25E2441BCB200BF3041 /* test.txt */,
 				70C3F379243E1ED800FEE428 /* PageRank_WikiData.txt */,
 				70C3F371243E181700FEE428 /* main.cpp */,
