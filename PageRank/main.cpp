@@ -37,27 +37,27 @@ bool basicPr(string inf, double beta) {
     // 确定文件打开
     if (!file) { cout<<"open \""<<inf<<"\" failed! "<<endl; return false; }
 
-    int idnode[MAX] = {0};  // node得id
-    int nodeid[MAX] = {0};  // id得node
-    
+    map<int, int> idnode;  // node得id
+    map<int, int> nodeid;  // id得node
     multimap<int, int> iedge;  // 优化稀疏矩阵，去掉为0的边
     
     int N = 0;  // 节点数
     // 文件读入 节点->节点
     int node1, node2;  // from node1 to node2
     for (int cnt = 0; file>>node1>>node2; cnt++) {
-        if (!idnode[node1]) {  // 节点id对应，方便查询
+        // 节点id对应，方便查询
+        if (idnode.find(node1)==idnode.end()) {  // 新的node
             nodeid[N] = node1;
-            N++;  // 避免id赋为0时被认为未赋值
             idnode[node1] = N;
-        }
-        if (!idnode[node2]) {
-            nodeid[N] = node2;
             N++;
-            idnode[node2] = N;
         }
-        int row = idnode[node1]-1;
-        int col = idnode[node2]-1;
+        if (idnode.find(node2)==idnode.end()) {
+            nodeid[N] = node2;
+            idnode[node2] = N;
+            N++;
+        }
+        int row = idnode[node1];
+        int col = idnode[node2];
         iedge.insert(pair<int, int>(row, col));  // M矩阵
     }
     file.close();
@@ -74,7 +74,7 @@ bool basicPr(string inf, double beta) {
         for (int i=0; i<N; i++) {  // 扫描r矩阵
             multimap<int, int>::iterator iter = iedge.find(i);
             for (int j=0; j<iedge.count(i); j++, iter++) {  // 扫描M矩阵
-                r_new[iter->second] += r_old[i]/iedge.count(i);
+                r_new[iter->second] += r_old[i]/iedge.count(i);    // 至少为1，无除0异常
             }
         }
         
@@ -122,30 +122,30 @@ bool blockStripePr(string inf, double beta) {
     // 确定文件打开
     if (!file) { cout<<"open \""<<inf<<"\" failed! "<<endl; return false; }
     
-    edge m_edge[NUM];
+    edge m_edge[NUM];  // 边记录，也是M稀疏矩阵优化+切分
     memset(m_edge, 0, sizeof(m_edge));
-
     int degree[MAX] = {0};  // 出度
-    int idnode[MAX] = {0};  // node得id
-    int nodeid[MAX] = {0};  // id得node
+    map<int, int> idnode;  // node得id
+    map<int, int> nodeid;  // id得node
 
     int cnt = 0, N = 0;  // 边数、节点数
     // 文件读入 节点->节点
     int node1, node2;  // from node1 to node2
     for (; file>>node1>>node2; cnt++) {
-        if (!idnode[node1]) {  // 节点id对应，方便查询
+        // 节点id对应，方便查询
+        if (idnode.find(node1)==idnode.end()) {  // 新的node
             nodeid[N] = node1;
-            N++;  // 避免id赋为0时被认为未赋值
             idnode[node1] = N;
-        }
-        if (!idnode[node2]) {
-            nodeid[N] = node2;
             N++;
-            idnode[node2] = N;
         }
-        m_edge[cnt].src = idnode[node1]-1;
-        m_edge[cnt].dst = idnode[node2]-1;  // M矩阵分块
-        degree[idnode[node1]-1]++;
+        if (idnode.find(node2)==idnode.end()) {
+            nodeid[N] = node2;
+            idnode[node2] = N;
+            N++;
+        }
+        m_edge[cnt].src = idnode[node1];
+        m_edge[cnt].dst = idnode[node2];  // M矩阵分块
+        degree[idnode[node1]]++;
     }
     file.close();
 
@@ -155,11 +155,12 @@ bool blockStripePr(string inf, double beta) {
         r_old[i] = (double)1/N;
         r_new[i] = 0.0;
     }
-    // double beta = 0.85;
+
     while (1) {  // 迭代至收敛
         double eps = 0.0;
         for (int i=0; i<cnt; i++) {  // M分为的cnt块
             r_new[m_edge[i].dst] += r_old[m_edge[i].src]/degree[m_edge[i].src];
+            // 有src记录，出度至少为1，无除0异常
         }
         
         double r_sum = 0.0;  // 记录pagerank泄露情况
@@ -181,7 +182,7 @@ bool blockStripePr(string inf, double beta) {
     nscore ndsc[N];  // 得分
     memset(ndsc, 0, sizeof(ndsc));
     for (int i=0; i<N; i++) {  // 节点原始id与得分对应
-        ndsc[i].node = nodeid[i];
+        ndsc[i].node = nodeid[i];  // 一定存在，可直接使用数组
         ndsc[i].score = r_old[i];
     }
     
